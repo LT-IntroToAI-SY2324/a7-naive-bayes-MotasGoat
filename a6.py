@@ -66,9 +66,12 @@ class BayesClassifier:
         # enumerate function, which loops over something and has an automatic counter.
         # write something like this to track progress (note the `# type: ignore` comment
         # which tells mypy we know better and it shouldn't complain at us on this line):
-        # for index, filename in enumerate(files, 1): # type: ignore
-        #     print(f"Training on file {index} of {len(files)}")
+        for index, filename in enumerate(files, 1): # type: ignore
+            print(f"Training on file {index} of {len(files)}")
+            print(filename)
         #     <the rest of your code for updating frequencies here>
+            text = self.load_file(os.path.join(self.training_data_directory, filename))
+            print(text)
 
 
         # we want to fill pos_freqs and neg_freqs with the correct counts of words from
@@ -81,7 +84,12 @@ class BayesClassifier:
         # positive frequency dictionary. If it is neither a postive or negative file,
         # ignore it and move to the next file (this is more just to be safe; we won't
         # test your code with neutral reviews)
-        
+            print(filename.startswith(self.pos_file_prefix))
+            print(filename.startswith(self.neg_file_prefix))
+            tokens = self.tokenize(text)
+            print(tokens)
+            self.update_dict(tokens, self.pos_freqs)
+
 
         # Updating frequences: to update the frequencies for each file, you need to get
         # the text of the file, tokenize it, then update the appropriate dictionary for
@@ -92,6 +100,7 @@ class BayesClassifier:
 
         # for debugging purposes, it might be useful to print out the tokens and their
         # frequencies for both the positive and negative dictionaries
+        print(self.pos_freqs)
         
 
         # once you have gone through all the files, save the frequency dictionaries to
@@ -185,8 +194,8 @@ class BayesClassifier:
         Args:
             text - text to tokenize
 
-        Returns:
             tokens of given text in order
+        Returns:
         """
         tokens = []
         token = ""
@@ -222,12 +231,18 @@ class BayesClassifier:
             freqs - dictionary of frequencies to update
         """
         # TODO: your work here
-        pass  # remove this line once you've implemented this method
+        for w in words:
+            if w in freqs:
+                freqs[w] += 1
+            else:
+                freqs[w] = 1
+             
+        #remove this line once you've implemented this method
 
 
 if __name__ == "__main__":
     # uncomment the below lines once you've implemented `train` & `classify`
-    # b = BayesClassifier()
+    b = BayesClassifier()
     # a_list_of_words = ["I", "really", "like", "this", "movie", ".", "I", "hope", \
     #                    "you", "like", "it", "too"]
     # a_dictionary = {}
